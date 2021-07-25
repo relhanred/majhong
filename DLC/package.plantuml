@@ -1,0 +1,91 @@
+@startuml package
+allow_mixing
+left to right direction
+skinparam linetype ortho
+skinparam fixCircleLabelOverlapping true
+title Architecture MVC du projet Shanghai20
+
+hide empty members
+
+actor :Utilisateur: as User
+
+package "vue (Shanghai20.view)" as view {
+	package "Shanghai20.view.extendable" as view_extendable {
+		class CadreCheckBox <extends JToggleButton>
+		class CadreComboBox <extends JComboBox>
+		class CadrePanel <extends JPanel>
+		class CadreTextField <extends JTextField>
+		class JBackground <extends JPanel>
+		class OvalButton <extends JButton>
+		class Slider
+	}
+	package "Shanghai20.view.gui" as view_gui {
+		class GraphicStatistic <extends JComponent>
+		class LeaderBoard <extends JComponent>
+		class ThemeShapeSelection
+			CadreComboBox <-- ThemeShapeSelection
+			JBackground <-- ThemeShapeSelection
+	}
+	class CadreOptionPane
+		CadreOptionPane --> OvalButton
+		CadreOptionPane --> JBackground
+	class GameWindow
+		OvalButton <--- GameWindow
+		CadrePanel <--- GameWindow
+		JBackground <--- GameWindow
+	class MainMenuWindow
+		OvalButton <-- MainMenuWindow
+		MainMenuWindow --> LeaderBoard
+		JBackground <-- MainMenuWindow
+	class NewGameWindow
+		OvalButton <-- NewGameWindow
+		NewGameWindow --> ThemeShapeSelection
+		CadreTextField <-- NewGameWindow
+		CadreComboBox <-- NewGameWindow
+		JBackground <-- NewGameWindow
+	class OptionsMenuWindow
+		OvalButton <-- OptionsMenuWindow
+		Slider <-- OptionsMenuWindow
+		OptionsMenuWindow --> ThemeShapeSelection
+		JBackground <-- OptionsMenuWindow
+		CadreCheckBox <-- OptionsMenuWindow
+	class StatisticWindow
+		OvalButton <- StatisticWindow
+		StatisticWindow --> GraphicStatistic
+		Slider <--- StatisticWindow
+		JBackground <-- StatisticWindow
+}
+
+package "contrôleur (Shanghai20.controller)" as controller {
+	package "Shanghai20.controller.gui" as controller_gui {
+		class GraphicBoard <extends JComponent>
+			GameWindow ---> GraphicBoard
+		class GraphicTile <extends JComponent>
+			GraphicBoard -> GraphicTile
+		class GraphicTimer <extends JComponent>
+			GameWindow ---> GraphicTimer
+		class TileExample <extends JComponent>
+			GraphicTile <- TileExample
+	}
+	interface Board
+		GameWindow ---> Board
+		NewGameWindow ---> Board
+		StatisticWindow ---> Board
+}
+
+package "modèle (Shanghai20.model)" as model {
+	interface History
+		Board --> History
+	interface BoardManager
+		Board --> BoardManager
+	interface Move
+		Board --> Move
+	interface Stage
+		Board --> Stage
+	interface Tile
+		Board --> Tile
+}
+
+User ---> view
+
+@enduml
